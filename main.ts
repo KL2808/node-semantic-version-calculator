@@ -3,8 +3,8 @@ import { simpleGit, SimpleGit, LogResult } from "simple-git";
 import { commitRegex } from "./regex";
 import { ConventionalCommit } from "./types";
 import { notEmpty } from "./helper";
-import version from "simple-git/dist/src/lib/tasks/version";
 import { Version } from "./class";
+import { spawn } from "child_process";
 
 async function getAllCommitMessages(): Promise<string[]> {
   const git: SimpleGit = simpleGit();
@@ -44,5 +44,8 @@ getAllCommitMessages().then((commits: string[]) => {
   console.log(conventionalCommits);
 
   const version = calculateVersion(conventionalCommits);
-  console.log(version.getVersionString());
+  const versionString = version.getVersionString();
+  console.log(versionString);
+
+  const v = spawn("npm", ["version", versionString, "--no-git-tag-version"]);
 });
